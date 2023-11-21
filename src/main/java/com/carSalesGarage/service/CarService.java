@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.carSalesGarage.service.files.FileStorageService;
+import com.carSalesGarage.service.files.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class CarService {
     @Autowired
     private CarRepo carRepo;
     @Autowired
-    private FileStorageService fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
 
     public Car addCar(Car car) {
         return carRepo.save(car);
@@ -41,7 +42,7 @@ public class CarService {
 
 
     public Car updateCarPicture(Long id, String fileName) {
-        System.out.println(id);
+        System.out.println("iddd"+id);
         Car car = carRepo.findById(id).orElse(null);
         assert car != null;
         car.setPicture(fileName);

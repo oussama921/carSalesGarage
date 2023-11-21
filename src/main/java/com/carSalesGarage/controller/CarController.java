@@ -2,9 +2,12 @@ package com.carSalesGarage.controller;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.carSalesGarage.service.files.FileStorageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,44 +30,86 @@ public class CarController {
     @Autowired
     private CarService carService;
     @Autowired
-    private FileStorageService fileStorageService;
+    private FileStorageServiceImpl fileStorageService;
 
     @PostMapping(value = "/car")
-    public ResponseEntity<Car> addCar(@RequestBody Car car) {
-        Car carObj = carService.addCar(car);
-            System.out.println(carObj.toString());
-        return new ResponseEntity<Car>(carObj, HttpStatus.OK);
+    public ResponseEntity<?> addCar(@RequestBody Car car) {
+        // Assuming that the date format is "dd-MM-yyyy"
+        DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String registrationDateStr = car.getRegistrationDate();
+        if (registrationDateStr == null) {
+            return new ResponseEntity<>("Registration date is required.", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            LocalDate registrationDate = LocalDate.parse(registrationDateStr, DATE_FORMATTER);
+            // Assuming 2015-01-01 is the cutoff date
+            LocalDate cutoffDate = LocalDate.of(2015, 1, 1);
+
+            if (registrationDate.isAfter(cutoffDate)){
+
+                System.out.println(car.getRegistrationDate());
+                Car carObj = carService.addCar(car);
+
+                System.out.println(carObj.toString());
+                return new ResponseEntity<Car>(carObj, HttpStatus.OK);
+            }else {
+                // Handle the case where the car is not registered after 2015
+                return new ResponseEntity<>("The car should be registered after 2015 .",HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/cars")
-    public List<Car> getCarsByFuelTypeAndMaxPrice(@RequestParam(value = "fuelType", required = false) FuelType fuelType,
+    public ResponseEntity<List<Car>> getCarsByFuelTypeAndMaxPrice(@RequestParam(value = "fuelType", required = false) FuelType fuelType,
                                                   @RequestParam(value = "maxPrice", required = false) Double maxPrice) {
-        List<Car> filtredCars = carService.getAllCars(fuelType, maxPrice);
+        try{
 
-        return filtredCars;
+
+            List<Car> filtredCars = carService.getAllCars(fuelType, maxPrice);
+
+            return new ResponseEntity<List<Car>>(filtredCars, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
 
     }
 
     @GetMapping("/makes")
-    public List<String> getAllMakes() {
-        List<String> MakesList = carService.getAllMakes();
+    public ResponseEntity<?> getAllMakes() {
+        try{
+            List<String> MakesList = carService.getAllMakes();
 
-        return MakesList;
+            return new ResponseEntity<List<String>>(MakesList, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PatchMapping(value = "/car/{id}", consumes = {"multipart/form-data"})
     public ResponseEntity<Car> updateCarById(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        System.out.println("id"+id);
+        System.out.println("file"+file);
+        try{
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
-        Date date = new Date(System.currentTimeMillis());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
+            Date date = new Date(System.currentTimeMillis());
 
-        String url = formatter.format(date)+" " + file.getOriginalFilename();
-        fileStorageService.addCarPicture(file, url);
+            String url = formatter.format(date)+" " + file.getOriginalFilename();
+            fileStorageService.addCarPicture(file, url);
+            System.out.println("heeeere");
 
-        Car car = carService.updateCarPicture(id, url);
+            Car car = carService.updateCarPicture(id, url);
+            System.out.println("car"+file);
 
-
-        return new ResponseEntity<Car>(car, HttpStatus.OK);
+            return new ResponseEntity<Car>(car, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
     }
 

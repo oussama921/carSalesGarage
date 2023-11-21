@@ -1,5 +1,6 @@
 package com.carSalesGarage;
 
+import com.carSalesGarage.service.files.FileStorageServiceImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -26,7 +27,7 @@ import jakarta.annotation.Resource;
 public class CarSalesGarageApplication {
 
     @Resource
-    FileStorageService fileStorageService;
+	FileStorageServiceImpl fileStorageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CarSalesGarageApplication.class, args);

@@ -10,14 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileStorageServiceImpl implements FileStorageService {
+public class FileStorageServiceImpl  {
 	
 	@Value("${storage}")
     private String storage;
     public FileStorageServiceImpl() {
     }
 
-    @Override
     public void init() {
         try {
             String folderPath = "src/main/resources/static/storage01"; // Change the path as needed
@@ -41,7 +40,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new RuntimeException("Could not initialize folder for upload!");
         }
     }
-	@Override
+
     public void addCarPicture(MultipartFile file , String url) {
         try {
             Files.copy(file.getInputStream(),Paths.get(storage).resolve(url));
