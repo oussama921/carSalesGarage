@@ -1,13 +1,11 @@
 package com.carSalesGarage.controller;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.carSalesGarage.service.files.FileStorageServiceImpl;
+import com.carSalesGarage.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.carSalesGarage.model.Car;
 import com.carSalesGarage.model.FuelType;
-import com.carSalesGarage.repo.CarRepo;
 import com.carSalesGarage.service.CarService;
-import com.carSalesGarage.service.files.FileStorageService;
-
-import io.swagger.v3.oas.annotations.Operation;
-
-import org.springframework.util.StringUtils;
 
 @RestController
 public class CarController {
@@ -30,7 +22,7 @@ public class CarController {
     @Autowired
     private CarService carService;
     @Autowired
-    private FileStorageServiceImpl fileStorageService;
+    private FileStorageService fileStorageService;
 
     @PostMapping(value = "/car")
     public ResponseEntity<?> addCar(@RequestBody Car car) {

@@ -1,4 +1,4 @@
-package com.carSalesGarage.service.files;
+package com.carSalesGarage.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileStorageServiceImpl  {
+public class FileStorageService  {
 	
 	@Value("${storage}")
     private String storage;
-    public FileStorageServiceImpl() {
+    public FileStorageService() {
     }
 
     public void init() {

@@ -1,10 +1,8 @@
 package com.carSalesGarage;
 
-import com.carSalesGarage.service.files.FileStorageServiceImpl;
+import com.carSalesGarage.service.FileStorageService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import com.carSalesGarage.service.files.FileStorageService;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -27,7 +25,7 @@ import jakarta.annotation.Resource;
 public class CarSalesGarageApplication {
 
     @Resource
-	FileStorageServiceImpl fileStorageService;
+	FileStorageService fileStorageService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CarSalesGarageApplication.class, args);
